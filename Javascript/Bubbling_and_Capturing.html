@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Event Bubbling and Capturing</title>
+</head>
+<body>
+    <h1>Event Bubbling and Capturing</h1>
+
+    <form>
+        FORM
+        <div>
+            DIV
+            <p>P</p>
+        </div>
+    </form>
+
+    <script>
+        for(let elem of document.querySelectorAll('*')) {
+            elem.addEventListener("click", e => alert(`Capturing: ${elem.tagName}`), true);
+            elem.addEventListener("click", e => alert(`Bubbling: ${elem.tagName}`));
+        }
+    </script>
+</body>

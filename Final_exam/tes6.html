@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Employee Profiles</title>
+    <style>
+        body { font-family: 'Times New Roman', serif; padding: 30px; }
+        
+        #btn-refresh {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            background-color: antiquewhite;
+        }
+
+        .container { 
+            display: flex; 
+            flex-direction: row; 
+            gap: 30px; 
+            flex-wrap: wrap; 
+        }
+
+        .card { 
+            width: 250px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: start;
+        }
+
+        .card img { width: 100%; height: auto; margin-bottom: 10px; }
+        .card div { margin-bottom: 3px; font-size: 18px; }
+        
+        .card button { margin-top: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h3>Click the button below to fetch three random employee profiles:</h3>
+    <button id="btn-refresh">🔄 Get Profiles</button>
+
+    <div class="container" id="PC"></div>
+
+
+    <script>
+        $(document).ready(function() {
+            
+            function loadProfiles() {
+                var $PC = $('#PC');
+                $PC.html('<p>Loading...</p>'); 
+
+                $.getJSON('https://randomuser.me/api/?results=3', function(data) {
+                    $PC.empty();
+
+                    $.each(data.results, function(i, user) {
+                        var fullname = user.name.first + ' ' + user.name.last;
+                        var age = user.dob.age;
+                        var category = (age < 25) ? "Young" : (age <= 50 ? "Productive" : "Old");
+                        var html = `
+                            <div class="card">
+                                <img src="${user.picture.large}" alt="Profile">
+                                <div>Name: ${fullname}</div>
+                                <div>Gender: ${user.gender}</div>
+                                <div>Age: ${age}</div>
+                                <div>${category}</div>
+                                <button class="btn-get" 
+                                    data-image="${user.picture.large}"
+                                    data-name="${fullname}"
+                                    data-age="${age}"
+                                    data-gender="${user.gender}">Get Data</button>
+                            </div>
+                        `;
+
+                        $PC.append(html);
+                    });
+                });
+            }
+
+            // klik untuk memuat profil
+            $('#btn-refresh').click(function() {
+                loadProfiles();
+            });
+
+            // Delegated event handler untuk tombol Get Data pada setiap kartu
+            $('#PC').on('click', '.btn-get', function() {
+                var $btn = $(this);
+                var info = {
+                    image : $btn.data('image'),
+                    name: $btn.data('name'),
+                    age: $btn.data('age'),
+                    gender: $btn.data('gender')
+                };
+
+                var msg = 'image : ' + info.image + '\n' +
+                          'Name: ' + info.name + '\n' +                                             
+                          'Age: ' + info.age + '\n' +
+                          'Gender: ' + info.gender;
+
+                alert(msg);
+            });
+
+        });
+    </script>
+</body>
+</html>

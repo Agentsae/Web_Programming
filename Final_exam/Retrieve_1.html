@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <title>Employee data card</title>
+
+        <style>
+            body {
+                font-family: 'Franklin Gothic Medium';
+                padding : 50px;
+                background-color: antiquewhite;
+            }
+
+            .PC {
+                display: flex  ;
+                flex-direction: row;
+                gap    : 20px;
+                max-width: 900px;
+            }
+            .card {
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                align-items: center;
+            }
+
+            .info {
+                align-items: center;
+            }
+
+            .card img {
+                width: 100%;
+                height: auto;
+                margin-bottom: 10px;
+            }
+
+        </style>
+
+    </head>
+
+    <body>
+        <h4>if you clicked button below, it will show three profiles</h4>
+        <button id="BT">Profile</button>
+        <br><br>
+        <div class="PC" id = "PC">
+        </div>
+
+        <script>
+            $(document).ready (function() {
+
+                $('#BT').click (function() {
+                    
+                    var $PC = $('#PC');
+
+                    $PC.html ('<p> Loading... </p>');
+
+                    $.getJSON('https://randomuser.me/api/?results=3', function(data) {
+
+                        $PC.empty();
+
+                        $.each(data.results, function(i, user) {
+
+                            var firstname = user.name.first;
+                            var lastname =user.name.last;
+                            var fullname = firstname + " " + lastname;
+
+                            var age = user.dob.age;
+                            var imageUrl = user.picture.large;
+
+                            var category = (age < 25) ? "Young" : (age <= 50 ? "Productive" : "Old");
+
+                            var PCHTML = `
+                                <div class= "card">
+                                <img src="${imageUrl}" alt="prpfile picture">
+                                <div class="info">
+                                    
+                                    <div> Name = ${fullname} </div>
+                                    <div> Age = ${age} </div>
+                                    <div> Category = ${category} </div>
+                                    <button class="card-button"> get data </button>
+                                </div>
+                            </div>
+                            <br></br>
+                        `;
+                        $PC.append(PCHTML);
+                    });    
+                }),
+                error, function() {
+                    $PC.html('<p> An error has occurred. </p>');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+            

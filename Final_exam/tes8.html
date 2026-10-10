@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Target Application - Refreshable</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            padding: 30px;
+        }
+
+        #main-btn {
+            padding: 10px 20px;
+            background-color: #4b89dc;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        #main-btn:hover { background-color: #356bb3; }
+
+        .container {
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .profile-box { max-width: 350px; }
+
+        table {
+            padding: 2px;
+            width: 100%;
+            border: 2px solid #4b89dc;
+        }
+
+        th, td {
+            border: 1px solid #4b89dc;
+            padding: 5px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        th { font-weight: bold; background-color: #f0f8ff; }
+
+        img { display: block; width: 150px; height: auto; margin: 0 auto; }
+
+        .info-bottom { margin-top: 10px; }
+        .country-name { font-weight: bold; margin-bottom: 5px; font-size: 16px; }
+        ul { margin: 5px 0 15px 20px; padding: 0; }
+        
+        .card-btn {
+            background-color: #eee;
+            border: 1px solid #999;
+            padding: 2px 8px;
+            font-family: 'Arial', sans-serif;
+            font-size: 12px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h3>Target application:</h3>
+
+    <button id="main-btn">Load New Data</button>
+    
+    <div class="container" id="PC">
+
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            
+            function loadData() {
+                var $PC = $('#PC');
+                $PC.html('<p>Loading data...</p>'); // Efek loading
+
+                $.getJSON('https://randomuser.me/api/?results=2', function(data) {
+                    $PC.empty(); // Bersihkan loading
+
+                    $.each(data.results, function(i, user) {
+                        var fullname = user.name.first + " " + user.name.last;
+                        var address = `Street: ${user.location.street.name}, ${user.location.street.number}`;
+                        
+                        var html = `
+                            <div class="profile-box">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Picture</th>
+                                            <th>Name</th>
+                                            <th>Gender</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><img src="${user.picture.large}" alt="img"></td>
+                                            <td>${fullname}</td>
+                                            <td>${user.gender}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+                                <div class="info-bottom">
+                                    <div class="country-name">${user.location.country}</div>
+                                    <ul><li>${address}</li></ul>
+                                    <button class="card-btn"
+                                    data-image="${user.picture.large}"
+                                    data-name="${fullname}"
+                                    data-gender="${user.gender}"
+                                    data-address="${address}"
+                                    >Get Data</button>
+                                </div>
+                            </div>
+                        `;
+                        $PC.append(html);
+                    });
+                });
+            }
+
+            $('#main-btn').click(function() {
+                loadData();
+            });
+            $('#PC').on('click', '.card-btn', function() {
+                var $btn = $(this);
+                var info = {
+                    image : $btn.data('image'),
+                    name: $btn.data('name'),
+                    gender: $btn.data('gender'),
+                    address: $btn.data('address')      
+                }
+                var msg = 'Image: ' + info.image + '\n' +
+                          'Name: ' + info.name + '\n' +
+                          'Gender: ' + info.gender + '\n' +
+                          'Address: ' + info.address;
+                alert(msg);});
+        });
+
+    </script>
+</body>
+</html>

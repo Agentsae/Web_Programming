@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+   
+    <title>Sample Form</title>
+
+        <style>
+            /* Simple styling for the range wrapper example */
+            .range-wrap{
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .range-wrap .min-label,
+            .range-wrap .max-label{
+                font-size: 0.9rem;
+                color: #333;
+                width: 2ch;
+                text-align: center;
+            }
+            
+            .range-wrap label{ margin-right: 0.25rem; }
+
+            /* Styling untuk value tooltip di dalam slider */
+            .range-input-wrapper {
+              position: relative;
+              display: inline-block;
+              width: 200px;
+            }
+            
+            .range-input-wrapper input[type="range"] {
+              width: 100%;
+              height: 6px;
+              border-radius: 3px;
+              background: #ddd;
+              outline: none;
+              -webkit-appearance: none;
+              appearance: none;
+            }
+            
+            /* Style untuk thumb (bulatan slider) */
+            .range-input-wrapper input[type="range"]::-webkit-slider-thumb {
+              -webkit-appearance: none;
+              appearance: none;
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              background: #4CAF50;
+              cursor: pointer;
+              box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            }
+            
+            .range-input-wrapper input[type="range"]::-moz-range-thumb {
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              background: #4CAF50;
+              cursor: pointer;
+              border: none;
+              box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            }
+            
+            /* Tooltip value di atas thumb */
+            .range-tooltip {
+              position: absolute;
+              top: -30px;
+              left: 0;
+              background: #4CAF50;
+              color: white;
+              padding: 4px 8px;
+              border-radius: 4px;
+              font-size: 12px;
+              font-weight: bold;
+              white-space: nowrap;
+              pointer-events: none;
+              transform: translateX(-50%);
+             
+            }
+            
+            .range-tooltip::after {
+              content: '';
+              position: absolute;
+              bottom: -5px;
+              left: 50%;
+              transform: translateX(-50%);
+              width: 0;
+              height: 0;
+              border-left: 5px solid transparent;
+              border-right: 5px solid transparent;
+              border-top: 5px solid #4CAF50;
+            }
+        </style>
+</head>
+ 
+        <body>
+            <form>
+                <label for="fname">First Name</label><br/>
+        <input type="text" id="fname" name="fname"/><br><br>
+        <input type="text" id="fname" name="fname" value="type here"/>
+    <br><br>
+
+        <input type="button" value="next"/>
+        <button>click me</button>
+        <br><br>
+
+        <input type="date" id="date" name="date" value="2001-04-14"/><br><br>
+        <input type="email" id="email" name="email" value="samuelnakzanglo1@gmail.com"/><br><br>
+        <input type="tel" id="phone number" name="phone number" value="0851-4154-5277"/><br><br>
+        <input type="file" id="myfile" name="myfile"/><br><br>
+        <input type="password" id="pwd" name="pwd" value="secret"/><br><br>
+        <input type="number" id="mynumber" name="mynumber" value="3"/><br><br>
+                <!-- Contoh penggunaan <div> sebagai pembungkus (wrapper) -->
+                <div class="range-wrap">
+                   
+                    <label for="myrange">Rating</label>
+                    <span class="min-label">0</span>
+                    
+                    <!-- Range input dengan tooltip value di dalam slider -->
+                    <div class="range-input-wrapper">
+                        <input type="range" id="
+                        myrange" name="myrating" min="0" max="100"/>
+                        <div class="range-tooltip" id="rangeTooltip">5</div>
+                    </div>
+                    
+                    <span class="max-label">100</span>
+                </div>
+                <br><br>
+        Hidden : <input type="hidden" id="myHiden" name="myHidden" value="secret"/><br><br>
+                </form>
+    
+        <script>
+            // Update the tooltip value as range input changes
+            (function() {
+                const range = document.getElementById ('myrange');
+                const tooltip = document.getElementById ('rangeTooltip');
+
+                if (!range || !tooltip) return;
+                
+                const updateTooltip = () => {
+                  const value = Number(range.value);
+                  const min = Number(range.min) || 0;
+                  const max = Number(range.max) || 100;
+
+                  // Update text
+                  tooltip.textContent = value;
+
+                  // Lebar input dan lebar thumb (harus sinkron dengan CSS thumb size)
+                  const inputRect = range.getBoundingClientRect();
+                  const wrapper = range.parentElement; // .range-input-wrapper
+                  const wrapperRect = wrapper.getBoundingClientRect();
+                  const thumbWidth = 20; // px — sesuai dengan CSS thumb width
+
+                  // Persentase posisi antara min dan max
+                  const percent = (value - min) / (max - min);
+
+                  // Hitung posisi tengah thumb relatif ke kiri wrapper (dalam px)
+                  // Kita gunakan (input width - thumbWidth) untuk memastikan thumb tidak keluar dari track
+                  const available = inputRect.width - thumbWidth;
+                  const thumbCenter = percent * available + thumbWidth/2;
+
+                  // Set posisi tooltip ke posisi tengah thumb (dalam px)
+                  tooltip.style.left = thumbCenter + 'px';
+                };
+                
+                range.addEventListener ('input', updateTooltip);
+                range.addEventListener ('change', updateTooltip);
+                
+                // Initialize display
+                updateTooltip();
+            })();
+        </script>
+
+
+        <form>
+            Username: <input type="text" id="username" name="username" value="John" size="20"/>
+                <br/><br/>
+            Nickname: <input type="text" id="nickname" name="nickname" autofocus/>
+                <br/><br/>
+            StudentID: <input type="text" id="studentId" name="studentId" value="001" readonly/>
+                <br/><br/>
+            Major: <input type="text" id="major" name="major" value="IT" disabled/>
+                <br/><br/>
+            Hobby: <input type="text" id="hobby" name="hobby" placeholder="coding"
+                            maxlength="20" required/>
+                <br/><br/>
+            Rate: <input type="number" id="rate" name="rate" min="1" max="5"/>
+                <br/><br/>
+            <input type="submit" value="Submit Form"/>
+        </form>
+
+    </body>
+
+
+
+</html>
+

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html>
+
+    <body>
+        <button id="myButton" onmouseover="handleMouse(event)" onmouseout="handleMouse(event)">Click me</button>
+        <script>
+            document.getElementById("myButton").addEventListener("click", function() {
+                alert("Button was clicked!");
+            });
+
+            
+            function handleMouse(event) {
+                var button = document.getElementById("myButton");
+                
+                if (event.type === "mouseover") {
+                    button.style.color = "red";
+                }
+                else if (event.type === "mouseout") {
+                    button.style.color = "black";
+                }
+            }
+
+            
+        </script>
+                Enter your First name: <input type="text" id="Firstname">
+        <script>
+            document.getElementById("Firstname").addEventListener("focus", myFunction);
+            function myFunction() {
+                document.getElementById("Firstname").style.backgroundColor = "DarkBlue";
+            }
+            </script>
+
+    </body>
+</html>

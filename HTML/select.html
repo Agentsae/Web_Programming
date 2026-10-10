@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html>
+
+    <head>
+
+        <title>Select_Sample</title>
+    </head>
+
+    <body>
+
+                <label for="cars">Choose a car :</label>
+
+                <!-- Native select is kept but hidden for progressive enhancement / form submit -->
+                <select id="cars" name="cars" multiple style="display:none">
+                        <option value="BYD">BYD</option>
+                        <option value="Volvo">Volvo</option>
+                        <option value="Wuling">Wuling</option>
+                        <option value="Toyota">Toyota</option>
+                </select>
+
+                <!-- Custom dropdown that supports multiple selection -->
+                <div class="multi-select" id="multiCars">
+                    <button type="button" class="ms-toggle" aria-haspopup="grid" aria-expanded="false">
+                        Select cars <span class="ms-count">(0)</span>
+                    </button>
+                    <div class="ms-options" role="listbox" aria-multiselectable="true">
+                        <label><input type="checkbox" value="BYD"> BYD</label>
+                        <label><input type="checkbox" value="Volvo"> Volvo</label>
+                        <label><input type="checkbox" value="Wuling"> Wuling</label>
+                        <label><input type="checkbox" value="Toyota"> Toyota</label>
+                    </div>
+                </div>
+
+                <style>
+                    /* Simple styles for the custom multi-dropdown */
+                    .multi-select{ position: relative; display: inline-block; font-family: sans-serif; }
+                    .ms-toggle{ padding: 6px 10px; cursor: pointer; }
+                    .ms-options{ display: none; position: absolute; left: 0; top: 110%; background: white; border: 1px solid #ccc; box-shadow: 0 2px 6px rgba(0,0,0,0.15); padding: 8px; z-index: 10; min-width: 180px; }
+                    .ms-options label{ display: block; padding: 4px 6px; cursor: pointer; }
+                    .ms-options label:hover{ background: #f3f3f3; }
+                    .ms-options input{ margin-right: 8px; }
+                </style>
+
+                <script>
+                    (function(){
+                        const wrapper = document.getElementById('multiCars');
+                        const toggle = wrapper.querySelector('.ms-toggle');
+                        const options = wrapper.querySelector('.ms-options');
+                        const checkboxes = options.querySelectorAll('input[type="checkbox"]');
+                        const native = document.getElementById('cars');
+                        const count = wrapper.querySelector('.ms-count');
+
+                        // Toggle dropdown
+                        toggle.addEventListener('click', () => {
+                            const open = toggle.getAttribute('aria-expanded') === 'true';
+                            toggle.setAttribute('aria-expanded', String(!open));
+                            options.style.display = open ? 'none' : 'block';
+                        });
+
+                        // Close when clicking outside
+                        document.addEventListener('click', (e) => {
+                            if (!wrapper.contains(e.target)){
+                                toggle.setAttribute('aria-expanded', 'false');
+                                options.style.display = 'none';
+                            }
+                        });
+
+                        // When checkbox changes, update native select and count
+                        function updateNative(){
+                            // clear all native selections
+                            for (let i=0;i<native.options.length;i++) native.options[i].selected = false;
+                            // set selected based on checkboxes
+                            let selectedCount = 0;
+                            checkboxes.forEach(cb => {
+                                if (cb.checked){
+                                    // find matching option in native select
+                                    for (let i=0;i<native.options.length;i++){
+                                        if (native.options[i].value === cb.value){ native.options[i].selected = true; break; }
+                                    }
+                                    selectedCount++;
+                                }
+                            });
+                            count.textContent = `(${selectedCount})`;
+                        }
+
+                        checkboxes.forEach(cb => cb.addEventListener('change', updateNative));
+
+                        // initialize from native (in case server rendered selections)
+                        (function initFromNative(){
+                            for (let i=0;i<native.options.length;i++){
+                                const val = native.options[i].value;
+                                if (native.options[i].selected){
+                                    const cb = options.querySelector(`input[value="${val}"]`);
+                                    if (cb) cb.checked = true;
+                                }
+                            }
+                            updateNative();
+                        })();
+                    })();
+                </script>
+
+    </body>
+</html>

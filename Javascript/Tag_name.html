@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tag Name</title>
+
+</head>
+<body>
+
+<h1>Tag Name</h1>
+
+<h2>Tag Name</h2>
+
+<ol>
+    <li>Sam</li>
+    <li>Tina</li>
+    <li>Johanes</li>
+</ol>
+
+<p>Paragraph 1</p>
+<p>Paragraph 2</p>
+<p id="result"></p>
+
+
+
+<script>
+  let elementList = document.getElementsByTagName("*");
+  let text = " ";  
+  
+  for(let i=0; i<elementList.length; i++){
+      text += elementList[i].tagName+'<br>';
+  } 
+  document.getElementById("result").innerHTML = text;
+ 
+</script>    
+
+</html>
